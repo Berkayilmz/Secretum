@@ -7,9 +7,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import LoginScreen from '../screens/AuthScreens/LoginScreen';
 import BottomBar from '../components/layout/BottomBar'
 import SignupScreen from '../screens/AuthScreens/SignupScreen'
+import NoteDetailScreen from '../screens/NoteDetailScreen';
 
 import { AuthContext } from '../contexts/AuthContext';
-import NoteDetailScreen from '../screens/NoteDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
