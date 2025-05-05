@@ -29,17 +29,20 @@ export default DairyCard;
 
 const styles = StyleSheet.create({
   card: {
-    width: 170, // sabit genişlik, ekranı doldurmak için uygun
-    marginBottom: 12,
-    padding: 10,
     backgroundColor: '#fff',
     borderRadius: 12,
-    elevation: 2,
+    padding: 10,
+    alignItems: 'center',
+    elevation: 3,
+    height: 220, // sabit yükseklik
+    justifyContent: 'space-between', // içeriği dikeyde dağıt
   },
   bottomView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    width: '100%', // ➕ Ekle: içerikleri yatayda yayılsın
+    paddingHorizontal: 4, // ➕ Biraz iç boşluk
     marginTop: 10,
   },
   title: {
@@ -55,8 +58,9 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 120,
+    height: 100,  // sabit resim boyutu
     borderRadius: 8,
+    resizeMode: 'cover',
   },
   note: {
     marginTop: 10,

@@ -1,10 +1,10 @@
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { auth } from "./firebaseConfig";
 
 const handleAddNote = async (title, noteText, emoji, image) => {
     const user = auth.currentUser;
-    if(!user) throw new Error("Kullanıcı Oturumu Bulunamadı");
+    if (!user) throw new Error("Kullanıcı Oturumu Bulunamadı");
     try {
         const docRef = await addDoc(collection(db, "notes"), {
             userId: user.uid,
@@ -19,4 +19,23 @@ const handleAddNote = async (title, noteText, emoji, image) => {
     }
 }
 
-export default handleAddNote
+const handleGetNotes = async () => {
+    const user = auth.currentUser
+    if (!user) throw new Error("Kullanıcı Oturumu Bulunamadı");
+    try {
+        const notesRef = collection(db, "notes");
+        const q = query(notesRef, where("userId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+
+        const notes = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        return notes
+    } catch (error) {
+        throw error;
+    }
+}
+
+export {handleAddNote, handleGetNotes}

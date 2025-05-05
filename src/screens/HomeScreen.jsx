@@ -1,18 +1,21 @@
 import { StyleSheet, SafeAreaView, View, FlatList, TouchableOpacity, Modal, Text } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+
 import { AuthContext } from '../contexts/AuthContext';
 import { auth } from '../firebase/firebaseConfig';
-import { useFocusEffect } from '@react-navigation/native';
+import { handleGetNotes } from '../firebase/db.js';
 
 import CustomButton from '../components/ui/CustomButton.jsx';
 import DairyCard from '../components/ui/DairyCard.jsx';
 import CustomHeader from '../components/layout/CustomHeader.jsx';
 
-import { notes } from '../../assets/tempData/data.js';
+//import { notes } from '../../assets/tempData/data.js';
 
 const HomeScreen = ({ navigation }) => {
   const { setIsAuth } = useContext(AuthContext);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [notes, setNotes] = useState(null);
 
   // 📌 Eposta doğrulama kontrolü
   useFocusEffect(
@@ -32,6 +35,18 @@ const HomeScreen = ({ navigation }) => {
     }, [])
   );
 
+  useEffect(()=>{
+    const fetchNotes = async () => {
+      try {
+        const userNotes = await handleGetNotes();
+        setNotes(userNotes);
+      } catch (error) {
+        console.error("Notlar alınamadı", error.message)
+      }
+    }
+    fetchNotes();
+  },[])
+
   const now = new Date();
   const day = String(now.getDate()).padStart(2, '0');
   const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -46,10 +61,12 @@ const HomeScreen = ({ navigation }) => {
         <FlatList
           data={notes}
           numColumns={2}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.id}
           contentContainerStyle={styles.cardContainer}
           columnWrapperStyle={{ justifyContent: 'space-between' }}
           renderItem={({ item }) => {
+            const formattedDate = new Date(item.date).toLocaleDateString('tr-TR'); // 🔁 tarih formatı gg.aa.yyyy
+          
             return (
               <TouchableOpacity
                 onPress={() => navigation.navigate('NoteDetailScreen', { note: item })}
@@ -57,10 +74,10 @@ const HomeScreen = ({ navigation }) => {
                 style={{ width: '48%', marginBottom: 12 }}
               >
                 <DairyCard
-                  title={item.title}
-                  note={item.note}
-                  imgSrc={item.imgSrc}
-                  date={item.date}
+                  title={`${item.emoji || ''} ${item.title}`}   // 🔁 Emoji + Başlık
+                  note={item.content}
+                  imgSrc={item.image}
+                  date={formattedDate}                          // 🔁 Formatlanmış tarih
                 />
               </TouchableOpacity>
             );

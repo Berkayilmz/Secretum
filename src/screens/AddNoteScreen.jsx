@@ -13,7 +13,7 @@ import EmojiKeyboard from '../components/ui/emojis/EmojiKeyborad';
 import CustomTextInput from '../components/ui/CustomTextInput';
 import CustomButton from '../components/ui/CustomButton';
 
-import handleAddNote from '../firebase/db';
+import {handleAddNote} from '../firebase/db';
 
 const AddNoteScreen = ({ navigation }) => {
     const [title, setTitle] = useState('');
