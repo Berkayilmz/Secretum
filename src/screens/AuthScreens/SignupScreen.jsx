@@ -5,7 +5,8 @@ import CustomButton from '../../components/ui/CustomButton'
 import CustomTextInput from '../../components/ui/CustomTextInput'
 
 import { AuthContext } from '../../contexts/AuthContext'
-import {handleSignup} from '../../firebase/auth'
+import { handleSignup, handleVerification } from '../../firebase/auth'
+
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 
@@ -23,6 +24,7 @@ const SignupScreen = ({ navigation }) => {
     try {
       await handleSignup(email, password, username)
       setIsAuth(true);
+      handleVerification();
       Alert.alert(`Kayıt Başarılı! Hoş Geldin ${username}`)
     } catch (error) {
       Alert.alert("Kayıt Hatası: ", error.message)

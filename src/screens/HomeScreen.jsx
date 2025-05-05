@@ -1,37 +1,54 @@
-import { StyleSheet, SafeAreaView, View, FlatList, TouchableOpacity } from 'react-native';
-import React, { useContext } from 'react';
+import { StyleSheet, SafeAreaView, View, FlatList, TouchableOpacity, Modal, Text } from 'react-native';
+import React, { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
+import { auth } from '../firebase/firebaseConfig';
+import { useFocusEffect } from '@react-navigation/native';
 
 import CustomButton from '../components/ui/CustomButton.jsx';
 import DairyCard from '../components/ui/DairyCard.jsx';
 import CustomHeader from '../components/layout/CustomHeader.jsx';
 
-import { notes } from '../../assets/tempData/data.js'
+import { notes } from '../../assets/tempData/data.js';
 
-
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   const { setIsAuth } = useContext(AuthContext);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+
+  // 📌 Eposta doğrulama kontrolü
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkEmailVerification = async () => {
+        const user = auth.currentUser;
+        if (user) {
+          await user.reload(); // kullanıcı verisini güncelle
+          if (!user.emailVerified) {
+            setShowVerificationModal(true);
+          } else {
+            setShowVerificationModal(false);
+          }
+        }
+      };
+      checkEmailVerification();
+    }, [])
+  );
+
   const now = new Date();
-
-  const day = String(now.getDate()).padStart(2, '0');      // 03
-  const month = String(now.getMonth() + 1).padStart(2, '0'); // 05 (Ocak = 0)
-  const year = String(now.getFullYear());         // 25
-
-  const formattedDate = `${day}.${month}.${year}`;  // "03.05.25"
-
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = String(now.getFullYear());
+  const formattedDate = `${day}.${month}.${year}`;
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomHeader title="Secretum" addButton={true}/>
+      <CustomHeader title="Secretum" addButton={true} />
 
       <View style={styles.cardContainer}>
-
         <FlatList
           data={notes}
           numColumns={2}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.cardContainer}
-          columnWrapperStyle={{ justifyContent: 'space-between' }} // BU SATIR ÖNEMLİ
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
           renderItem={({ item }) => {
             return (
               <TouchableOpacity
@@ -51,7 +68,26 @@ const HomeScreen = ({navigation}) => {
         />
       </View>
 
-
+      {/* 🔒 Email doğrulama uyarı modali */}
+      <Modal
+        visible={showVerificationModal}
+        transparent
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>
+              Güvenlik nedeniyle e-posta adresinizi onaylamanız gerekiyor. Lütfen e-posta kutunuzu kontrol edin.
+            </Text>
+            <CustomButton
+              title="Tamam"
+              width="100%"
+              height={40}
+              onPress={() => setShowVerificationModal(false)}
+            />
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -66,13 +102,25 @@ const styles = StyleSheet.create({
   cardContainer: {
     paddingHorizontal: 8,
     paddingTop: 12,
-  }
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 20,
+  },
+  modalContent: {
+    width: '100%',
+    backgroundColor: 'white',
+    padding: 24,
+    borderRadius: 16,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 15,
+    color: '#333',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
 });
-
-{/* <CustomButton
-        title="ÇIKIŞ YAP"
-        width="80%"
-        height={40}
-        onPress={() => setIsAuth(false)}
-        backgroundColor='red'
-      /> */}

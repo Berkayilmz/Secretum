@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import {
   StyleSheet,
-  TextInput,
   View,
   Image,
   ScrollView,
-  Button,
+  Text,
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+
 import CustomHeader from '../components/layout/CustomHeader';
 import EmojiKeyboard from '../components/ui/emojis/EmojiKeyborad';
+import CustomTextInput from '../components/ui/CustomTextInput';
+import CustomButton from '../components/ui/CustomButton';
 
-import { notes } from '../../assets/tempData/data.js';
-
-const NoteDetailScreen = ({navigation}) => {
+const NoteDetailScreen = ({ navigation }) => {
   const route = useRoute();
   const note = route.params?.note;
 
@@ -37,44 +37,53 @@ const NoteDetailScreen = ({navigation}) => {
   };
 
   const handleSave = () => {
-    const newNote = {
+    const updatedNote = {
+      ...note,
       title,
       note: noteText,
       imgSrc: image,
-      date: note?.date || new Date().toISOString().slice(0, 10),
-      emoji: emoji || "", // undefined olmasını engeller
+      emoji,
     };
-    console.log('Kaydedilen not:', newNote);
-    navigation.navigate('HomeScreen')
-  }
+    console.log('Güncellenen not:', updatedNote);
+    navigation.navigate('HomeScreen');
+  };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <CustomHeader title="Not Detay" backButton={true} />
-      <ScrollView contentContainerStyle={styles.container}>
-        <TextInput
-          placeholder="Başlık"
-          style={styles.input}
+      <ScrollView contentContainerStyle={styles.content}>
+        <CustomTextInput
+          width="100%"
+          placeholder={note?.title || 'Başlık giriniz'}
           value={title}
           onChangeText={setTitle}
         />
-        <TextInput
-          placeholder="Günlüğünü buraya yaz..."
-          multiline
-          style={styles.textArea}
+
+        <CustomTextInput
+          width="100%"
+          height={120}
+          placeholder={note?.note || 'Günlüğünüzü buraya yazın...'}
           value={noteText}
           onChangeText={setNoteText}
         />
-        
-        <EmojiKeyboard onEmojiSelected={(e) => setEmoji(e)}/>
 
-        <Button title="Bir fotoğraf yükle" onPress={pickImage} />
+        <EmojiKeyboard onEmojiSelected={(e) => setEmoji(e)} />
+        {emoji ? <Text style={styles.emoji}>{emoji}</Text> : null}
 
+        <CustomButton
+          title="Fotoğraf Yükle"
+          width="100%"
+          height={45}
+          onPress={pickImage}
+        />
         {image && <Image source={{ uri: image }} style={styles.image} />}
 
-        <View style={styles.saveButton}>
-          <Button title="Kaydet" onPress={handleSave} />
-        </View>
+        <CustomButton
+          title="Kaydet"
+          width="100%"
+          height={45}
+          onPress={handleSave}
+        />
       </ScrollView>
     </View>
   );
@@ -84,32 +93,22 @@ export default NoteDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: '#F9F9F9',
+  },
+  content: {
     padding: 16,
-    alignItems: 'stretch',
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  textArea: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 12,
-    borderRadius: 8,
-    height: 120,
-    textAlignVertical: 'top',
-    marginBottom: 12,
+  emoji: {
+    fontSize: 48,
+    textAlign: 'center',
+    marginVertical: 16,
   },
   image: {
     width: '100%',
     height: 200,
     borderRadius: 8,
     marginTop: 12,
-  },
-  saveButton: {
-    marginTop: 20,
+    marginBottom: 20,
   },
 });

@@ -8,8 +8,10 @@ import LoginScreen from '../screens/AuthScreens/LoginScreen';
 import BottomBar from '../components/layout/BottomBar'
 import SignupScreen from '../screens/AuthScreens/SignupScreen'
 import NoteDetailScreen from '../screens/NoteDetailScreen';
+import EditProfileScreen from '../screens/EditProfileScreen'
 
 import { AuthContext } from '../contexts/AuthContext';
+import AddNoteScreen from '../screens/AddNoteScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +27,8 @@ const AppNavigator = () => {
                   <>
                     <Stack.Screen name='HomeScreen' component={BottomBar}/>
                     <Stack.Screen name='NoteDetailScreen' component={NoteDetailScreen}/>
+                    <Stack.Screen name='EditProfileScreen' component={EditProfileScreen}/>
+                    <Stack.Screen name='AddNoteScreen' component={AddNoteScreen}/>
                   </>
                 )
                 :

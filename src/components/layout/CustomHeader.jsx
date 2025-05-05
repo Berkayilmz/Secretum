@@ -18,7 +18,7 @@ const CustomHeader = ({ title, backButton, addButton }) => {
         <Text style={styles.title}>{title}</Text>
 
         {addButton ? (
-          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('NoteDetailScreen')}>
+          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddNoteScreen')}>
             <Text style={styles.plus}>+</Text>
           </TouchableOpacity>
         ) : (
