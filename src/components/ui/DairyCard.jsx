@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 
-const DairyCard = ({ title, note, imgSrc, date }) => {
+const DairyCard = ({ title, note, imgSrc, date, onPress }) => {
   return (
     <View style={styles.card}>
       <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
@@ -17,7 +17,7 @@ const DairyCard = ({ title, note, imgSrc, date }) => {
       <Text style={styles.note} numberOfLines={3}>{note}</Text>
       <View style={styles.bottomView}>
         <Text style={styles.date}>{date}</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onPress}>
           <FontAwesome name="trash-o" size={18} color="gray" />
         </TouchableOpacity>
       </View>

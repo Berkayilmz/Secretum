@@ -4,7 +4,8 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { AuthContext } from '../contexts/AuthContext';
 import { auth } from '../firebase/firebaseConfig';
-import { handleGetNotes } from '../firebase/db.js';
+
+import { handleGetNotes, handleDeleteNote } from '../firebase/db.js';
 
 import CustomButton from '../components/ui/CustomButton.jsx';
 import DairyCard from '../components/ui/DairyCard.jsx';
@@ -45,7 +46,7 @@ const HomeScreen = ({ navigation }) => {
       }
     }
     fetchNotes();
-  },[])
+  },[notes])
 
   const now = new Date();
   const day = String(now.getDate()).padStart(2, '0');
@@ -74,10 +75,11 @@ const HomeScreen = ({ navigation }) => {
                 style={{ width: '48%', marginBottom: 12 }}
               >
                 <DairyCard
-                  title={`${item.emoji || ''} ${item.title}`}   // 🔁 Emoji + Başlık
+                  title={`${item.emoji || ''} ${item.title}`}   
                   note={item.content}
                   imgSrc={item.image}
-                  date={formattedDate}                          // 🔁 Formatlanmış tarih
+                  date={formattedDate}   
+                  onPress={()=>handleDeleteNote(item.id)}                       
                 />
               </TouchableOpacity>
             );
