@@ -6,7 +6,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import CustomButton from '../components/ui/CustomButton';
 import CustomTextInput from '../components/ui/CustomTextInput';
-import DeleteAccountPopup from '../components/ui/DeleteAccountPopup';
+import DeleteAccountPopup from '../components/popup/DeleteAccountPopup';
 import CustomHeader from '../components/layout/CustomHeader';
 import { AuthContext } from '../contexts/AuthContext';
 

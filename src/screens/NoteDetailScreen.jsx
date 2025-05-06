@@ -14,14 +14,18 @@ import EmojiKeyboard from '../components/ui/emojis/EmojiKeyborad';
 import CustomTextInput from '../components/ui/CustomTextInput';
 import CustomButton from '../components/ui/CustomButton';
 
+import { handleUpdateNote } from '../firebase/db';
+
 const NoteDetailScreen = ({ navigation }) => {
   const route = useRoute();
   const note = route.params?.note;
 
   const [title, setTitle] = useState(note?.title || '');
-  const [noteText, setNoteText] = useState(note?.note || '');
-  const [image, setImage] = useState(note?.imgSrc || null);
+  const [noteText, setNoteText] = useState(note?.content || '');
+  const [image, setImage] = useState(note?.image || null);
   const [emoji, setEmoji] = useState(note?.emoji || '');
+  const [docId, setDocId] = useState(note?.id || '');
+
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -36,17 +40,22 @@ const NoteDetailScreen = ({ navigation }) => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const updatedNote = {
-      ...note,
       title,
-      note: noteText,
-      imgSrc: image,
+      content: noteText,
+      image: image,
       emoji,
     };
-    console.log('Güncellenen not:', updatedNote);
-    navigation.navigate('HomeScreen');
+    try {
+      await handleUpdateNote(docId, updatedNote);
+      navigation.navigate('HomeScreen');
+    } catch (error) {
+      console.error("Günlük güncellenirken hata oluştu: ", error.message);
+    }
+    
   };
+
 
   return (
     <View style={styles.container}>
@@ -62,7 +71,7 @@ const NoteDetailScreen = ({ navigation }) => {
         <CustomTextInput
           width="100%"
           height={120}
-          placeholder={note?.note || 'Günlüğünüzü buraya yazın...'}
+          placeholder={note?.content || 'Günlüğünüzü buraya yazın...'}
           value={noteText}
           onChangeText={setNoteText}
         />

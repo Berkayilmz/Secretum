@@ -5,11 +5,12 @@ import { useFocusEffect } from '@react-navigation/native';
 import { AuthContext } from '../contexts/AuthContext';
 import { auth } from '../firebase/firebaseConfig';
 
-import { handleGetNotes, handleDeleteNote } from '../firebase/db.js';
+import { handleGetNotes } from '../firebase/db.js';
 
 import CustomButton from '../components/ui/CustomButton.jsx';
 import DairyCard from '../components/ui/DairyCard.jsx';
 import CustomHeader from '../components/layout/CustomHeader.jsx';
+import DeleteNotePopup from '../components/popup/DeletNotePopup.jsx';
 
 //import { notes } from '../../assets/tempData/data.js';
 
@@ -17,6 +18,8 @@ const HomeScreen = ({ navigation }) => {
   const { setIsAuth } = useContext(AuthContext);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [notes, setNotes] = useState(null);
+  const [selectedNoteId, setSelectedNoteId] = useState(null);
+  const [showDeletePopup, setShowDeletePopup] = useState(null);
 
   // 📌 Eposta doğrulama kontrolü
   useFocusEffect(
@@ -36,7 +39,7 @@ const HomeScreen = ({ navigation }) => {
     }, [])
   );
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchNotes = async () => {
       try {
         const userNotes = await handleGetNotes();
@@ -46,7 +49,7 @@ const HomeScreen = ({ navigation }) => {
       }
     }
     fetchNotes();
-  },[notes])
+  }, [notes])
 
   const now = new Date();
   const day = String(now.getDate()).padStart(2, '0');
@@ -67,7 +70,7 @@ const HomeScreen = ({ navigation }) => {
           columnWrapperStyle={{ justifyContent: 'space-between' }}
           renderItem={({ item }) => {
             const formattedDate = new Date(item.date).toLocaleDateString('tr-TR'); // 🔁 tarih formatı gg.aa.yyyy
-          
+
             return (
               <TouchableOpacity
                 onPress={() => navigation.navigate('NoteDetailScreen', { note: item })}
@@ -75,11 +78,14 @@ const HomeScreen = ({ navigation }) => {
                 style={{ width: '48%', marginBottom: 12 }}
               >
                 <DairyCard
-                  title={`${item.emoji || ''} ${item.title}`}   
+                  title={`${item.emoji || ''} ${item.title}`}
                   note={item.content}
                   imgSrc={item.image}
-                  date={formattedDate}   
-                  onPress={()=>handleDeleteNote(item.id)}                       
+                  date={formattedDate}
+                  onPress={() => {
+                    setSelectedNoteId(item.id)
+                    setShowDeletePopup(true);
+                  }}
                 />
               </TouchableOpacity>
             );
@@ -87,7 +93,7 @@ const HomeScreen = ({ navigation }) => {
         />
       </View>
 
-      {/* 🔒 Email doğrulama uyarı modali */}
+      {/* Email doğrulama uyarı modali */}
       <Modal
         visible={showVerificationModal}
         transparent
@@ -107,6 +113,14 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+
+      {/* Günlük silme popup */}
+      <DeleteNotePopup
+        visible={showDeletePopup}
+        onClose={()=>setShowDeletePopup(false)}
+        noteId={selectedNoteId}
+      />
+
     </SafeAreaView>
   );
 };

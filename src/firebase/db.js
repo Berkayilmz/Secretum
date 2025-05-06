@@ -1,4 +1,4 @@
-import { collection, addDoc, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { auth } from "./firebaseConfig";
 
@@ -46,4 +46,13 @@ const handleDeleteNote = async (noteId) => {
     }
 }
 
-export {handleAddNote, handleGetNotes, handleDeleteNote}
+const handleUpdateNote = async (docId, updatedNote) => {
+    try {
+        const noteRef = doc(db, "notes", docId);
+        await updateDoc(noteRef, updatedNote);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export {handleAddNote, handleGetNotes, handleDeleteNote, handleUpdateNote}
