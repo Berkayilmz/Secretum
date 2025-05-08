@@ -1,13 +1,17 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../contexts/ThemeContext'; // Tema context'i
+
 import HomeScreen from '../../screens/HomeScreen';
 import CalendarScreen from '../../screens/CalendarScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
-import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
 const BottomBar = () => {
+  const theme = useTheme(); // 🎯 Tema verisini al
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -24,9 +28,16 @@ const BottomBar = () => {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#007bff',
-        tabBarInactiveTintColor: 'gray',
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: theme.background,
+          borderTopColor: theme.border || '#ccc',
+        },
+        tabBarActiveTintColor: theme.primary,
+        tabBarInactiveTintColor: theme.textSecondary || 'gray',
+        tabBarLabelStyle: {
+          fontWeight: '600',
+        },
       })}
     >
       <Tab.Screen name="Ana Sayfa" component={HomeScreen} />

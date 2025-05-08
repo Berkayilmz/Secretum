@@ -1,18 +1,18 @@
-import { StyleSheet, Text, View, Image, Alert, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useContext, useState } from 'react'
+import { StyleSheet, Text, View, Image, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useContext, useState } from 'react';
 
-import CustomButton from '../../components/ui/CustomButton'
-import CustomTextInput from '../../components/ui/CustomTextInput'
+import CustomButton from '../../components/ui/CustomButton';
+import CustomTextInput from '../../components/ui/CustomTextInput';
 
-import { AuthContext } from '../../contexts/AuthContext'
-import { handleSignup, handleVerification } from '../../firebase/auth'
+import { AuthContext } from '../../contexts/AuthContext';
+import { handleSignup, handleVerification } from '../../firebase/auth';
 
-import { SafeAreaView } from 'react-native-safe-area-context'
-
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const SignupScreen = ({ navigation }) => {
-
-  const { setIsAuth } = useContext(AuthContext)
+  const { setIsAuth } = useContext(AuthContext);
+  const theme = useTheme();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -22,32 +22,32 @@ const SignupScreen = ({ navigation }) => {
   const handleRegister = async () => {
     if (password !== confirmPassword) return Alert.alert("Parolalar Eşleşmiyor!");
     try {
-      await handleSignup(email, password, username)
+      await handleSignup(email, password, username);
       setIsAuth(true);
       handleVerification();
-      Alert.alert(`Kayıt Başarılı! Hoş Geldin ${username}`)
+      Alert.alert(`Kayıt Başarılı! Hoş Geldin ${username}`);
     } catch (error) {
-      Alert.alert("Kayıt Hatası: ", error.message)
+      Alert.alert("Kayıt Hatası: ", error.message);
     }
-
-  }
+  };
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={[styles.flex, { backgroundColor: theme.background }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <SafeAreaView style={styles.container}>
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={require('../../../assets/diary.png')} />
         </View>
-        {/* {width, height, placeholder, onChangeText} */}
+
         <View style={styles.inputContainer}>
-          <CustomTextInput width='80%' height='40' placeholder='Kullanıcı Adı' secureTextEntry={false} onChangeText={setUsername} />
-          <CustomTextInput width='80%' height='40' placeholder='E-mail' secureTextEntry={false} onChangeText={setEmail} />
-          <CustomTextInput width='80%' height='40' placeholder='Şifre' secureTextEntry={true} onChangeText={setPassword} />
-          <CustomTextInput width='80%' height='40' placeholder='Şifre' secureTextEntry={true} onChangeText={setConfirmPassword} />
+          <CustomTextInput width='80%' height={40} placeholder='Kullanıcı Adı' secureTextEntry={false} onChangeText={setUsername} />
+          <CustomTextInput width='80%' height={40} placeholder='E-mail' secureTextEntry={false} onChangeText={setEmail} />
+          <CustomTextInput width='80%' height={40} placeholder='Şifre' secureTextEntry={true} onChangeText={setPassword} />
+          <CustomTextInput width='80%' height={40} placeholder='Şifre Tekrar' secureTextEntry={true} onChangeText={setConfirmPassword} />
         </View>
+
         <View style={styles.buttonContainer}>
           <CustomButton
             title="KAYIT OL"
@@ -60,20 +60,23 @@ const SignupScreen = ({ navigation }) => {
             width="80%"
             height={40}
             onPress={() => console.log("Google Giriş")}
-            backgroundColor="#fff"
-            textColor='black'
+            backgroundColor={theme.card}
+            textColor={theme.text}
           />
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
-  )
-}
+  );
+};
 
-export default SignupScreen
+export default SignupScreen;
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   container: {
-    flex: 1
+    flex: 1,
   },
   imageContainer: {
     flex: 3,
@@ -84,16 +87,16 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: 5
+    marginBottom: 5,
   },
   buttonContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginBottom: '20'
+    marginBottom: 20,
   },
   image: {
     width: '70%',
     height: '70%',
-  }
-})
+  },
+});

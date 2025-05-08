@@ -1,6 +1,7 @@
-import { Image, StyleSheet, Button, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
+import CustomButton from './CustomButton'; // varsayım: aynı klasörde veya yolu değiştir
 
 const ImagePickerComponent = ({ onImageSelected }) => {
   const [image, setImage] = useState(null);
@@ -22,7 +23,12 @@ const ImagePickerComponent = ({ onImageSelected }) => {
 
   return (
     <View style={styles.container}>
-      <Button title="Bir fotoğraf yükle" onPress={pickImage} />
+      <CustomButton
+        title="Fotoğraf Yükle"
+        width="100%"
+        height={45}
+        onPress={pickImage}
+      />
       {image && <Image source={{ uri: image }} style={styles.image} />}
     </View>
   );
@@ -32,13 +38,12 @@ export default ImagePickerComponent;
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    marginVertical: 16,
+    marginTop: 12,
   },
   image: {
-    width: 200,
+    width: '100%',
     height: 200,
+    borderRadius: 8,
     marginTop: 12,
-    borderRadius: 10,
   },
 });

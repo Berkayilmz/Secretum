@@ -1,10 +1,9 @@
 import { StyleSheet, SafeAreaView, View, FlatList, TouchableOpacity, Modal, Text } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-
+import { useTheme } from '../contexts/ThemeContext'; // buraya dikkat
 import { AuthContext } from '../contexts/AuthContext';
 import { auth } from '../firebase/firebaseConfig';
-
 import { handleGetNotes } from '../firebase/db.js';
 
 import CustomButton from '../components/ui/CustomButton.jsx';
@@ -12,27 +11,21 @@ import DairyCard from '../components/ui/DairyCard.jsx';
 import CustomHeader from '../components/layout/CustomHeader.jsx';
 import DeleteNotePopup from '../components/popup/DeletNotePopup.jsx';
 
-//import { notes } from '../../assets/tempData/data.js';
-
 const HomeScreen = ({ navigation }) => {
   const { setIsAuth } = useContext(AuthContext);
+  const  theme  = useTheme(); // tema verisini al
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [notes, setNotes] = useState(null);
   const [selectedNoteId, setSelectedNoteId] = useState(null);
   const [showDeletePopup, setShowDeletePopup] = useState(null);
 
-  // 📌 Eposta doğrulama kontrolü
   useFocusEffect(
     React.useCallback(() => {
       const checkEmailVerification = async () => {
         const user = auth.currentUser;
         if (user) {
-          await user.reload(); // kullanıcı verisini güncelle
-          if (!user.emailVerified) {
-            setShowVerificationModal(true);
-          } else {
-            setShowVerificationModal(false);
-          }
+          await user.reload();
+          setShowVerificationModal(!user.emailVerified);
         }
       };
       checkEmailVerification();
@@ -43,22 +36,17 @@ const HomeScreen = ({ navigation }) => {
     const fetchNotes = async () => {
       try {
         const userNotes = await handleGetNotes();
-        setNotes(userNotes);
+        const sortedNotes = userNotes.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setNotes(sortedNotes);
       } catch (error) {
-        console.error("Notlar alınamadı", error.message)
+        console.error("Notlar alınamadı", error.message);
       }
-    }
+    };
     fetchNotes();
-  }, [notes])
-
-  const now = new Date();
-  const day = String(now.getDate()).padStart(2, '0');
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const year = String(now.getFullYear());
-  const formattedDate = `${day}.${month}.${year}`;
+  }, [notes]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <CustomHeader title="Secretum" addButton={true} />
 
       <View style={styles.cardContainer}>
@@ -66,11 +54,10 @@ const HomeScreen = ({ navigation }) => {
           data={notes}
           numColumns={2}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.cardContainer}
+          contentContainerStyle={[styles.cardContainer, { paddingBottom: 100 }]}
           columnWrapperStyle={{ justifyContent: 'space-between' }}
           renderItem={({ item }) => {
-            const formattedDate = new Date(item.date).toLocaleDateString('tr-TR'); // 🔁 tarih formatı gg.aa.yyyy
-
+            const formattedDate = new Date(item.date).toLocaleDateString('tr-TR');
             return (
               <TouchableOpacity
                 onPress={() => navigation.navigate('NoteDetailScreen', { note: item })}
@@ -83,7 +70,7 @@ const HomeScreen = ({ navigation }) => {
                   imgSrc={item.image}
                   date={formattedDate}
                   onPress={() => {
-                    setSelectedNoteId(item.id)
+                    setSelectedNoteId(item.id);
                     setShowDeletePopup(true);
                   }}
                 />
@@ -93,15 +80,10 @@ const HomeScreen = ({ navigation }) => {
         />
       </View>
 
-      {/* Email doğrulama uyarı modali */}
-      <Modal
-        visible={showVerificationModal}
-        transparent
-        animationType="fade"
-      >
+      <Modal visible={showVerificationModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>
+          <View style={[styles.modalContent, { backgroundColor: theme.card }]}>
+            <Text style={[styles.modalText, { color: theme.text }]}>
               Güvenlik nedeniyle e-posta adresinizi onaylamanız gerekiyor. Lütfen e-posta kutunuzu kontrol edin.
             </Text>
             <CustomButton
@@ -114,13 +96,11 @@ const HomeScreen = ({ navigation }) => {
         </View>
       </Modal>
 
-      {/* Günlük silme popup */}
       <DeleteNotePopup
         visible={showDeletePopup}
-        onClose={()=>setShowDeletePopup(false)}
+        onClose={() => setShowDeletePopup(false)}
         noteId={selectedNoteId}
       />
-
     </SafeAreaView>
   );
 };
@@ -130,7 +110,6 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   cardContainer: {
     paddingHorizontal: 8,
@@ -145,14 +124,12 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '100%',
-    backgroundColor: 'white',
     padding: 24,
     borderRadius: 16,
     alignItems: 'center',
   },
   modalText: {
     fontSize: 15,
-    color: '#333',
     marginBottom: 16,
     textAlign: 'center',
   },

@@ -9,6 +9,7 @@ import {
 import { useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 
+import { useTheme } from '../contexts/ThemeContext';
 import CustomHeader from '../components/layout/CustomHeader';
 import EmojiKeyboard from '../components/ui/emojis/EmojiKeyborad';
 import CustomTextInput from '../components/ui/CustomTextInput';
@@ -17,6 +18,7 @@ import CustomButton from '../components/ui/CustomButton';
 import { handleUpdateNote } from '../firebase/db';
 
 const NoteDetailScreen = ({ navigation }) => {
+  const theme = useTheme();
   const route = useRoute();
   const note = route.params?.note;
 
@@ -25,7 +27,6 @@ const NoteDetailScreen = ({ navigation }) => {
   const [image, setImage] = useState(note?.image || null);
   const [emoji, setEmoji] = useState(note?.emoji || '');
   const [docId, setDocId] = useState(note?.id || '');
-
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -44,7 +45,7 @@ const NoteDetailScreen = ({ navigation }) => {
     const updatedNote = {
       title,
       content: noteText,
-      image: image,
+      image,
       emoji,
     };
     try {
@@ -53,17 +54,15 @@ const NoteDetailScreen = ({ navigation }) => {
     } catch (error) {
       console.error("Günlük güncellenirken hata oluştu: ", error.message);
     }
-    
   };
 
-
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <CustomHeader title="Not Detay" backButton={true} />
       <ScrollView contentContainerStyle={styles.content}>
         <CustomTextInput
           width="100%"
-          placeholder={note?.title || 'Başlık giriniz'}
+          placeholder={title ? title : "Başlık Giriniz"}
           value={title}
           onChangeText={setTitle}
         />
@@ -71,13 +70,13 @@ const NoteDetailScreen = ({ navigation }) => {
         <CustomTextInput
           width="100%"
           height={120}
-          placeholder={note?.content || 'Günlüğünüzü buraya yazın...'}
+          placeholder={noteText ? noteText : "Günlüğünüzü Buraya Yazınız"}
           value={noteText}
           onChangeText={setNoteText}
         />
 
-        <EmojiKeyboard onEmojiSelected={(e) => setEmoji(e)} />
-        {emoji ? <Text style={styles.emoji}>{emoji}</Text> : null}
+        <EmojiKeyboard onEmojiSelected={setEmoji} />
+        {emoji ? <Text style={[styles.emoji, { color: theme.text }]}>{emoji}</Text> : null}
 
         <CustomButton
           title="Fotoğraf Yükle"
@@ -103,7 +102,6 @@ export default NoteDetailScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9F9F9',
   },
   content: {
     padding: 16,

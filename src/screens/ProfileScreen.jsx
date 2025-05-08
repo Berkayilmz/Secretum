@@ -1,17 +1,33 @@
-import { StyleSheet, Text, View, Image, ImageBackground, TouchableOpacity } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 
+import { useTheme } from '../contexts/ThemeContext';
 import CustomButton from '../components/ui/CustomButton';
+import { handleGetUserNoteStats } from '../firebase/db';
 import { handleSignout } from '../firebase/auth';
 import { auth } from '../firebase/firebaseConfig';
-import { useFocusEffect } from '@react-navigation/native';
 
 const ProfileScreen = ({ navigation }) => {
+  const theme = useTheme();
+
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [profileImage, setProfileImage] = useState(null);
+  const [stats, setStats] = useState({
+    totalCount: 0,
+    lastNoteDate: null,
+    longestStreak: 0,
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -19,6 +35,9 @@ const ProfileScreen = ({ navigation }) => {
       if (currentUser) {
         setUserName(currentUser.displayName || '');
         setEmail(currentUser.email || '');
+        handleGetUserNoteStats()
+          .then(setStats)
+          .catch(err => console.error("İstatistik alınırken hata: ", err.message));
       }
     }, [])
   );
@@ -36,7 +55,7 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.headerWrapper}>
         <ImageBackground
           source={require('../../assets/dairyProfile.png')}
@@ -52,29 +71,33 @@ const ProfileScreen = ({ navigation }) => {
         </ImageBackground>
       </View>
 
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>👤 Kullanıcı Adı</Text>
-        <Text style={styles.value}>{userName}</Text>
+      <View style={[styles.infoContainer, { backgroundColor: theme.card }]}>
+        <Text style={[styles.label, { color: theme.text }]}>👤 Kullanıcı Adı</Text>
+        <Text style={[styles.value, { color: theme.text }]}>{userName}</Text>
 
-        <Text style={styles.label}>📧 E-posta</Text>
-        <Text style={styles.value}>{email}</Text>
+        <Text style={[styles.label, { color: theme.text }]}>📧 E-posta</Text>
+        <Text style={[styles.value, { color: theme.text }]}>{email}</Text>
       </View>
 
-      {/* Bilgi Kutuları */}
       <View style={styles.statsContainer}>
-        <View style={styles.statBox}>
-          <Text style={styles.statValue}>12</Text>
-          <Text style={styles.statLabel}>Toplam Günlük</Text>
+        <View style={[styles.statBox, { backgroundColor: theme.card }]}>
+          <Text style={[styles.statValue, { color: theme.text }]}>{stats.totalCount}</Text>
+          <Text style={[styles.statLabel, { color: theme.text }]}>Toplam Günlük</Text>
         </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statValue}>03 Mayıs</Text>
-          <Text style={styles.statLabel}>Son Giriş</Text>
+        <View style={[styles.statBox, { backgroundColor: theme.card }]}>
+          <Text style={[styles.statValue, { color: theme.text }]}>
+            {stats.lastNoteDate
+              ? new Date(stats.lastNoteDate).toLocaleDateString("tr-TR", { day: "2-digit", month: "long" })
+              : "-"}
+          </Text>
+          <Text style={[styles.statLabel, { color: theme.text }]}>Son Giriş</Text>
         </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statValue}>5 gün</Text>
-          <Text style={styles.statLabel}>En Uzun Seri</Text>
+        <View style={[styles.statBox, { backgroundColor: theme.card }]}>
+          <Text style={[styles.statValue, { color: theme.text }]}>{stats.longestStreak}</Text>
+          <Text style={[styles.statLabel, { color: theme.text }]}>En Uzun Seri</Text>
         </View>
       </View>
+
       <CustomButton
         title="Profil Düzenle"
         width="100%"
@@ -96,7 +119,6 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
     paddingHorizontal: 16,
     paddingTop: 10,
     justifyContent: 'space-between',
@@ -119,38 +141,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.25)',
     zIndex: 1,
   },
-  avatarWrapper: {
-    position: 'absolute',
-    bottom: 90,
-    zIndex: 10,
-    backgroundColor: '#fff',
-    padding: 5,
-    borderRadius: 80,
-    elevation: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   avatar: {
     width: 120,
     height: 120,
     borderRadius: 60,
   },
-  editButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#eee',
-    borderRadius: 12,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    elevation: 2,
-  },
-  editText: {
-    fontSize: 12,
-    color: '#333',
-  },
   infoContainer: {
-    backgroundColor: '#fff',
     padding: 24,
     borderRadius: 16,
     marginTop: 10,
@@ -164,12 +160,10 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: '700',
     fontSize: 14,
-    color: '#888',
     marginBottom: 4,
   },
   value: {
     fontSize: 16,
-    color: '#222',
     marginBottom: 16,
   },
   statsContainer: {
@@ -180,7 +174,6 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: '#fff',
     paddingVertical: 14,
     marginHorizontal: 4,
     borderRadius: 10,
@@ -190,11 +183,9 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#2D2D2D',
   },
   statLabel: {
     fontSize: 12,
-    color: '#777',
     marginTop: 4,
     textAlign: 'center',
   },

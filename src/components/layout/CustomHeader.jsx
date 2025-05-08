@@ -1,28 +1,36 @@
 import { SafeAreaView, Platform, View, Text, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../../contexts/ThemeContext'; // 🎯 Tema hook
 
 const CustomHeader = ({ title, backButton, addButton }) => {
   const navigation = useNavigation();
+  const theme = useTheme(); // 🎯 Tema verisini al
 
   return (
-    <SafeAreaView style={styles.headerContainer}>
+    <SafeAreaView style={[styles.headerContainer, { backgroundColor: theme.background }]}>
       <View style={styles.innerHeader}>
         {backButton ? (
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('HomeScreen')}>
-            <Text style={styles.plus}>{'<'}</Text>
+          <TouchableOpacity
+            style={[styles.navButton, { backgroundColor: theme.surface }]}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={[styles.plus, { color: theme.text }]}>{'<'}</Text>
           </TouchableOpacity>
         ) : (
-          <View style={{ width: 32 }} /> // boşluk koruyucu, hizalama için
+          <View style={{ width: 32 }} />
         )}
 
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, { color: theme.text }]}>{title}</Text>
 
         {addButton ? (
-          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddNoteScreen')}>
-            <Text style={styles.plus}>+</Text>
+          <TouchableOpacity
+            style={[styles.navButton, { backgroundColor: theme.surface }]}
+            onPress={() => navigation.navigate('AddNoteScreen')}
+          >
+            <Text style={[styles.plus, { color: theme.text }]}>+</Text>
           </TouchableOpacity>
         ) : (
-          <View style={{ width: 32 }} /> // yine hizalama için boş kutu
+          <View style={{ width: 32 }} />
         )}
       </View>
     </SafeAreaView>
@@ -32,7 +40,6 @@ const CustomHeader = ({ title, backButton, addButton }) => {
 const styles = StyleSheet.create({
   headerContainer: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    backgroundColor: '#fff',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -57,16 +64,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
   },
-  addButton: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 20,
-    width: 32,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backButton: {
-    backgroundColor: '#f0f0f0',
+  navButton: {
     borderRadius: 20,
     width: 32,
     height: 32,

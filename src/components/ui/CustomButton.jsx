@@ -1,15 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+// components/ui/CustomButton.js
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const CustomButton = ({
   title,
   width,
   height,
   onPress,
-  backgroundColor = '#6C63FF',
-  textColor = '#fff',
+  backgroundColor,
+  textColor,
   disabled = false
 }) => {
+  const theme  = useTheme();
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -17,15 +21,23 @@ const CustomButton = ({
       activeOpacity={0.7}
       style={[
         styles.touchableOpacity,
-        { width, height, backgroundColor, opacity: disabled ? 0.5 : 1 }
+        {
+          width,
+          height,
+          backgroundColor: backgroundColor || theme.primary,
+          opacity: disabled ? 0.5 : 1,
+          borderColor: theme.border
+        }
       ]}
     >
-      <Text style={[styles.text, { color: textColor }]}>{title}</Text>
+      <Text style={[styles.text, { color: textColor || '#fff' }]}>
+        {title}
+      </Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
-export default CustomButton
+export default CustomButton;
 
 const styles = StyleSheet.create({
   touchableOpacity: {
@@ -33,11 +45,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 4
+    marginBottom: 8,
   },
   text: {
     fontSize: 16,
-    fontWeight: '600'
-  }
-})
+    fontWeight: '600',
+  },
+});

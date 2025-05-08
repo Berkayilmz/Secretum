@@ -9,12 +9,14 @@ import CustomTextInput from '../components/ui/CustomTextInput';
 import DeleteAccountPopup from '../components/popup/DeleteAccountPopup';
 import CustomHeader from '../components/layout/CustomHeader';
 import { AuthContext } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 import { handleUpdateUser, handleUpdatePassword, handleDeleteUser } from '../firebase/auth';
 
 const EditProfileScreen = () => {
     const route = useRoute();
     const { userName: initialUserName, email: initialEmail } = route.params || {};
+    const theme = useTheme();
 
     const [userName, setUserName] = useState(initialUserName || '');
     const [email, setEmail] = useState(initialEmail || '');
@@ -48,11 +50,10 @@ const EditProfileScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-
+        <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
             <View style={styles.headerWrapper}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Text style={styles.backButtonText}>←</Text>
+                <TouchableOpacity style={[styles.backButton, { backgroundColor: theme.card }]} onPress={() => navigation.goBack()}>
+                    <Text style={[styles.backButtonText, { color: theme.text }]}>←</Text>
                 </TouchableOpacity>
 
                 <ImageBackground
@@ -74,15 +75,15 @@ const EditProfileScreen = () => {
                 </ImageBackground>
             </View>
 
-            <View style={styles.infoContainer}>
-                <Text style={styles.label}>👤 Kullanıcı Adı</Text>
+            <View style={[styles.infoContainer, { backgroundColor: theme.card }]}>
+                <Text style={[styles.label, { color: theme.text }]}>👤 Kullanıcı Adı</Text>
                 <CustomTextInput
                     width="100%"
                     placeholder={userName}
                     onChangeText={setUserName}
                 />
 
-                <Text style={styles.label}>📧 E-posta</Text>
+                <Text style={[styles.label, { color: theme.text }]}>📧 E-posta</Text>
                 <CustomTextInput
                     width="100%"
                     placeholder={email}
@@ -91,16 +92,16 @@ const EditProfileScreen = () => {
             </View>
 
             <View style={styles.statsContainer}>
-                <View style={styles.statBox}>
-                    <Text style={styles.statValue}>12</Text>
+                <View style={[styles.statBox, { backgroundColor: theme.card }]}>
+                    <Text style={[styles.statValue, { color: theme.text }]}>12</Text>
                     <Text style={styles.statLabel}>Toplam Günlük</Text>
                 </View>
-                <View style={styles.statBox}>
-                    <Text style={styles.statValue}>03 Mayıs</Text>
+                <View style={[styles.statBox, { backgroundColor: theme.card }]}>
+                    <Text style={[styles.statValue, { color: theme.text }]}>03 Mayıs</Text>
                     <Text style={styles.statLabel}>Son Giriş</Text>
                 </View>
-                <View style={styles.statBox}>
-                    <Text style={styles.statValue}>5 gün</Text>
+                <View style={[styles.statBox, { backgroundColor: theme.card }]}>
+                    <Text style={[styles.statValue, { color: theme.text }]}>5 gün</Text>
                     <Text style={styles.statLabel}>En Uzun Seri</Text>
                 </View>
             </View>
@@ -148,7 +149,6 @@ export default EditProfileScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FAFAFA',
         paddingHorizontal: 16,
         paddingTop: 10,
         justifyContent: 'space-between',
@@ -163,14 +163,12 @@ const styles = StyleSheet.create({
         top: 10,
         left: 10,
         zIndex: 10,
-        backgroundColor: 'rgba(255,255,255,0.8)',
         paddingHorizontal: 10,
         paddingVertical: 6,
         borderRadius: 20,
     },
     backButtonText: {
         fontSize: 18,
-        color: '#333',
         fontWeight: 'bold',
     },
     headerBackground: {
@@ -217,7 +215,6 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     infoContainer: {
-        backgroundColor: '#fff',
         padding: 24,
         borderRadius: 16,
         marginTop: 10,
@@ -231,7 +228,6 @@ const styles = StyleSheet.create({
     label: {
         fontWeight: '700',
         fontSize: 14,
-        color: '#888',
         marginBottom: 4,
     },
     statsContainer: {
@@ -242,7 +238,6 @@ const styles = StyleSheet.create({
     },
     statBox: {
         flex: 1,
-        backgroundColor: '#fff',
         paddingVertical: 14,
         marginHorizontal: 4,
         borderRadius: 10,
@@ -252,7 +247,6 @@ const styles = StyleSheet.create({
     statValue: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#2D2D2D',
     },
     statLabel: {
         fontSize: 12,

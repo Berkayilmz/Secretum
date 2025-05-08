@@ -1,9 +1,18 @@
-// components/ui/DeleteAccountPopup.js
 import React, { useState } from 'react';
-import { Modal, View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import {
+  Modal,
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Alert
+} from 'react-native';
+import { useTheme } from '../../contexts/ThemeContext'; // 🎯 Tema hook
 import { handleDeleteUser } from '../../firebase/auth';
 
 const DeleteAccountPopup = ({ visible, onClose }) => {
+  const theme = useTheme(); // 🎯 Tema verisi
   const [password, setPassword] = useState('');
 
   const handleDelete = async () => {
@@ -19,19 +28,20 @@ const DeleteAccountPopup = ({ visible, onClose }) => {
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
-        <View style={styles.popup}>
-          <Text style={styles.title}>Hesabınızı Silmek Üzeresiniz</Text>
-          <Text style={styles.label}>Lütfen şifrenizi girin:</Text>
+        <View style={[styles.popup, { backgroundColor: theme.surface }]}>
+          <Text style={[styles.title, { color: theme.text }]}>Hesabınızı Silmek Üzeresiniz</Text>
+          <Text style={[styles.label, { color: theme.text }]}>Lütfen şifrenizi girin:</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: theme.text, borderColor: theme.border, backgroundColor: theme.inputBackground }]}
             secureTextEntry
             placeholder="Şifre"
+            placeholderTextColor={theme.placeholder}
             onChangeText={setPassword}
             value={password}
           />
 
           <View style={styles.buttons}>
-            <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
+            <TouchableOpacity style={[styles.cancelBtn, { backgroundColor: theme.cancel }]} onPress={onClose}>
               <Text style={styles.btnText}>İptal</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
@@ -54,7 +64,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   popup: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 20,
     width: '85%',
@@ -68,11 +77,9 @@ const styles = StyleSheet.create({
   },
   label: {
     marginBottom: 6,
-    color: '#555',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -83,7 +90,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cancelBtn: {
-    backgroundColor: '#aaa',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
