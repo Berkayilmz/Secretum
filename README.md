@@ -29,6 +29,18 @@
 
 ---
 
+## 🧩 Eklenecek Özellikler
+
+- 🔄 **Google Authentication** desteği
+- 🔒 **Gizlilik Modu:** Ana ekranda günlükler bulanık olacak, kullanıcı tıklayarak açabilecek
+- 🎨 **UI İyileştirmeleri:** Arayüz görsel olarak iyileştirilecek, geçişler daha akıcı hale getirilecek
+- 💬 **Duygu Analizi:** Günlüklerin metni analiz edilerek kullanıcının ruh hali belirlenecek
+- ✉️ **Motivasyon Mektupları:** Olumsuz duygu tespitinde uygulama kullanıcıya pozitif ve kişisel mesajlar sunacak
+
+> 💡 **Not:** Tüm bu özellikler kullanıcı deneyimini geliştirmek ve kişisel refahı desteklemek için planlanmaktadır.
+
+---
+
 ## 🖼️ Ekran Görüntüleri
 
 ### 🔐 Giriş & Kayıt Ekranı
