@@ -34,35 +34,38 @@
 ### 🔐 Giriş & Kayıt Ekranı
 Kullanıcılar kendi hesaplarıyla giriş yapabilir veya yeni kayıt oluşturabilir.
 
-![login](screenshots/login.png)
+<p float="left">
+  <img src="assets/readme-images/login-screen.jpeg" width="250"/>
+  <img src="assets/readme-images/signup-screen.jpeg" width="250"/>
+</p>
 
 ---
 
 ### 📅 Takvim & Emoji İşaretleme
-Takvim üzerinde not bırakılan günlerde seçilen emoji gösterilir.
+Takvim üzerinde not bırakılan günlerde seçilen emoji gösterilir. Tıklandığında o güne ait günlük görünür.
 
-![calendar](screenshots/calendar.png)
+<img src="assets/readme-images/calendar-screen.jpeg" width="250"/>
 
 ---
 
 ### 📓 Günlük Kartları (Ana Sayfa)
 Son girilen günlükler kart halinde görüntülenir.
 
-![home](screenshots/home.png)
+<img src="assets/readme-images/home-screen.jpeg" width="250"/>
 
 ---
 
 ### ➕ Yeni Günlük Oluşturma
 Günlük oluştururken başlık, içerik, emoji ve fotoğraf eklenebilir.
 
-![add](screenshots/add-note.png)
+<img src="assets/readme-images/note-detail-screen.jpeg" width="250"/>
 
 ---
 
 ### 🧑 Profil & İstatistikler
 Kullanıcı bilgileri, giriş tarihi ve günlük istatistikleri görüntülenebilir.
 
-![profile](screenshots/profile.png)
+<img src="assets/readme-images/profile-screen.jpeg" width="250"/>
 
 ---
 
@@ -76,7 +79,7 @@ Kullanıcı bilgileri, giriş tarihi ve günlük istatistikleri görüntülenebi
 | Firebase Auth   | Kullanıcı doğrulama          |
 | Firestore       | Notların bulutta saklanması  |
 | Takvim          | `react-native-calendars`     |
-| Emoji          | `rn-emoji-keyboard`          |
+| Emoji           | `rn-emoji-keyboard`          |
 | Fotoğraf Seçici | `expo-image-picker`          |
 | Temalandırma    | `ThemeContext` + dark/light  |
 
