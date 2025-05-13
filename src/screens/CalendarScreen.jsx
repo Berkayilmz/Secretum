@@ -53,10 +53,12 @@ const CalendarScreen = () => {
                     style={{ width: '48%', marginBottom: 12 }}
                   >
                     <DairyCard
-                      title={`${item.emoji || ''} ${item.title}`}
+                      title={item.title}
+                      emoji={item.emoji}
                       note={item.content}
                       imgSrc={item.image}
                       date={formattedDate}
+                      isPrivate={item.isPrivate}
                       onPress={() => {
                         // Silme popupı vs entegre edilecekse buraya
                       }}

@@ -2,7 +2,7 @@ import { collection, addDoc, query, where, getDocs, deleteDoc, doc, updateDoc, g
 import { db } from "./firebaseConfig";
 import { auth } from "./firebaseConfig";
 
-const handleAddNote = async (title, noteText, emoji, image) => {
+const handleAddNote = async (title, noteText, emoji, image, isPrivate) => {
     const user = auth.currentUser;
     if (!user) throw new Error("Kullanıcı Oturumu Bulunamadı");
 
@@ -13,6 +13,7 @@ const handleAddNote = async (title, noteText, emoji, image) => {
             content: noteText,
             emoji,
             image,
+            isPrivate,
             date: new Date().toISOString()
         })
     } catch (error) {

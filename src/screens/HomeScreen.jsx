@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, View, FlatList, TouchableOpacity, Modal, Text } from 'react-native';
+import { StyleSheet, SafeAreaView, View, FlatList, TouchableOpacity, Modal, Text, Button } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTheme } from '../contexts/ThemeContext'; // buraya dikkat
@@ -65,10 +65,12 @@ const HomeScreen = ({ navigation }) => {
                 style={{ width: '48%', marginBottom: 12 }}
               >
                 <DairyCard
-                  title={`${item.emoji || ''} ${item.title}`}
+                  title={item.title}
+                  emoji={item.emoji}
                   note={item.content}
                   imgSrc={item.image}
                   date={formattedDate}
+                  isPrivate={item.isPrivate}
                   onPress={() => {
                     setSelectedNoteId(item.id);
                     setShowDeletePopup(true);
@@ -78,6 +80,7 @@ const HomeScreen = ({ navigation }) => {
             );
           }}
         />
+
       </View>
 
       <Modal visible={showVerificationModal} transparent animationType="fade">

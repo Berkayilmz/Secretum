@@ -3,30 +3,37 @@ import React from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 
-const DairyCard = ({ title, note, imgSrc, date, onPress }) => {
-  const theme  = useTheme();
+const DairyCard = ({ title, emoji, note, imgSrc, date, isPrivate, onPress }) => {
+  const theme = useTheme();
 
   return (
     <View style={[styles.card, { backgroundColor: theme.card }]}>
-      {/* Üst kısım */}
       <View style={styles.topSection}>
-        <Text style={[styles.title, { color: theme.text }]} numberOfLines={1} ellipsizeMode='tail'>
-          {title}
+        <Text style={[styles.title, { color: theme.text }]} numberOfLines={1} ellipsizeMode="tail">
+          {isPrivate ? '🔒' : `${emoji} ${title}`}
         </Text>
+
         <View style={[styles.divider, { backgroundColor: theme.border }]} />
+
         {imgSrc && (
           <Image
             style={styles.image}
             resizeMode="cover"
-            source={{ uri: imgSrc }}
+            source={
+              isPrivate
+                ? require('../../../assets/private-diary.png')
+                : { uri: imgSrc }
+            }
           />
         )}
-        <Text style={[styles.note, { color: theme.text }]} numberOfLines={2}>
-          {note}
-        </Text>
+
+        {!isPrivate && (
+          <Text style={[styles.note, { color: theme.text }]} numberOfLines={2}>
+            {note}
+          </Text>
+        )}
       </View>
 
-      {/* Alt kısım */}
       <View style={styles.bottomView}>
         <Text style={[styles.date, { color: theme.text }]}>{date}</Text>
         <TouchableOpacity onPress={onPress}>

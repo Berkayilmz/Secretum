@@ -5,6 +5,7 @@ import {
   Image,
   ScrollView,
   Text,
+  Switch
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
@@ -27,6 +28,7 @@ const NoteDetailScreen = ({ navigation }) => {
   const [image, setImage] = useState(note?.image || null);
   const [emoji, setEmoji] = useState(note?.emoji || '');
   const [docId, setDocId] = useState(note?.id || '');
+  const [isPrivate, setIsPrivate] = useState(note?.isPrivate)
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -47,6 +49,7 @@ const NoteDetailScreen = ({ navigation }) => {
       content: noteText,
       image,
       emoji,
+      isPrivate
     };
     try {
       await handleUpdateNote(docId, updatedNote);
@@ -92,6 +95,13 @@ const NoteDetailScreen = ({ navigation }) => {
           height={45}
           onPress={handleSave}
         />
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 8 }}>
+          <Switch
+            value={isPrivate}
+            onValueChange={setIsPrivate}
+          />
+          <Text style={{ marginLeft: 8 }}>Gizli Not</Text>
+        </View>
       </ScrollView>
     </View>
   );

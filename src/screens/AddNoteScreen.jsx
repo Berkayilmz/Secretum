@@ -6,6 +6,7 @@ import {
     ScrollView,
     Text,
     Alert,
+    Switch,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import CustomHeader from '../components/layout/CustomHeader';
@@ -21,8 +22,10 @@ const AddNoteScreen = ({ navigation }) => {
     const [noteText, setNoteText] = useState('');
     const [image, setImage] = useState(null);
     const [emoji, setEmoji] = useState('');
+    const [isPrivate, setIsPrivate] = useState(false);
 
-    const theme  = useTheme();
+
+    const theme = useTheme();
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -39,7 +42,7 @@ const AddNoteScreen = ({ navigation }) => {
 
     const handleSave = async () => {
         try {
-            await handleAddNote(title, noteText, emoji, image);
+            await handleAddNote(title, noteText, emoji, image, isPrivate);
             console.log("Not eklendi");
             navigation.navigate('HomeScreen');
         } catch (error) {
@@ -85,6 +88,13 @@ const AddNoteScreen = ({ navigation }) => {
                     height={45}
                     onPress={handleSave}
                 />
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 8 }}>
+                    <Switch
+                        value={isPrivate}
+                        onValueChange={setIsPrivate}
+                    />
+                    <Text style={{ marginLeft: 8 }}>Gizli Not</Text>
+                </View>
             </ScrollView>
         </View>
     );

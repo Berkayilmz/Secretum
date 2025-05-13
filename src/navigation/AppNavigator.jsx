@@ -13,6 +13,7 @@ import EditProfileScreen from '../screens/EditProfileScreen'
 import { AuthContext } from '../contexts/AuthContext';
 import AddNoteScreen from '../screens/AddNoteScreen';
 
+
 const Stack = createNativeStackNavigator();
 
 
