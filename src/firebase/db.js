@@ -1,18 +1,23 @@
 import { collection, addDoc, query, where, getDocs, deleteDoc, doc, updateDoc, getDoc, orderBy } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { auth } from "./firebaseConfig";
+import { encryptText, decryptText } from "../utils/encryption";
 
 const handleAddNote = async (title, noteText, emoji, image, isPrivate) => {
     const user = auth.currentUser;
     if (!user) throw new Error("Kullanıcı Oturumu Bulunamadı");
 
+    const encryptedTitle = await encryptText(title);
+    const encryptedNoteText = await encryptText(noteText);
+    const encryptedImagePath = await encryptText(image);
+
     try {
         const userNotesRef = collection(db, "notes", user.uid, "userNotes");
         await addDoc(userNotesRef, {
-            title,
-            content: noteText,
+            title: encryptedTitle,
+            content: encryptedNoteText,
             emoji,
-            image,
+            image: encryptedImagePath,
             isPrivate,
             date: new Date().toISOString()
         })
@@ -29,10 +34,21 @@ const handleGetNotes = async () => {
         const userNotesRef = collection(db, "notes", user.uid, "userNotes");
         const querySnapshot = await getDocs(userNotesRef);
 
-        const notes = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }))
+        const notes = Promise.all(querySnapshot.docs.map(async doc => {
+            const data = doc.data();
+
+            const decryptedTitle = await decryptText(data.title);
+            const decryptedContent = await decryptText(data.content);
+            const decryptedImagePath = await decryptText(data.image);
+
+            return {
+                id: doc.id,
+                ...data,
+                title: decryptedTitle,
+                content: decryptedContent,
+                image: decryptedImagePath,
+            }
+        }));
         return notes;
     } catch (error) {
         throw error;
@@ -56,11 +72,24 @@ const handleGetNotesByDate = async (dateString) => {
         );
 
         const snapshot = await getDocs(q);
-        const notes = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
 
+        const notes = await Promise.all(
+            snapshot.docs.map(async (doc) => {
+                const data = doc.data();
+
+                const decryptedTitle = await decryptText(data.title);
+                const decryptedContent = await decryptText(data.content);
+                const decryptedImagePath = await decryptText(data.image);
+
+                return {
+                    id: doc.id,
+                    ...data,
+                    title: decryptedTitle,
+                    content: decryptedContent,
+                    image: decryptedImagePath,
+                }
+            })
+        )
         return notes;
     } catch (error) {
         throw error;
@@ -83,7 +112,18 @@ const handleUpdateNote = async (docId, updatedNote) => {
     if (!user) throw new Error("Kullanıcı Oturumu Bulunamadı");
     try {
         const noteRef = doc(db, "notes", user.uid, "userNotes", docId);
-        await updateDoc(noteRef, updatedNote);
+    
+        const decryptedTitle = await encryptText(updatedNote.title);
+        const decryptedContent = await encryptText(updatedNote.content);
+        const decryptedImage = await encryptText(updatedNote.image);
+
+        await updateDoc(noteRef, {
+            ...updatedNote,
+            title: decryptedTitle,
+            content: decryptedContent,
+            image: decryptedImage,
+        })
+
     } catch (error) {
         throw error;
     }

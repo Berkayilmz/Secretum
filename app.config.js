@@ -3,6 +3,9 @@ import 'dotenv/config';
 export default {
   name: "Secretum",
   slug: "secretum",
+  "plugins": [
+    "expo-secure-store"
+  ],
   version: "1.0.0",
   extra: {
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
