@@ -75,6 +75,7 @@ const NoteDetailScreen = ({ navigation }) => {
           height={120}
           placeholder={noteText ? noteText : "Günlüğünüzü Buraya Yazınız"}
           value={noteText}
+          multiline={true}
           onChangeText={setNoteText}
         />
 
@@ -100,7 +101,7 @@ const NoteDetailScreen = ({ navigation }) => {
             value={isPrivate}
             onValueChange={setIsPrivate}
           />
-          <Text style={{ marginLeft: 8 }}>Gizli Not</Text>
+          <Text style={{ marginLeft: 8, color: theme.text }}>Gizli Günlük</Text>
         </View>
       </ScrollView>
     </View>

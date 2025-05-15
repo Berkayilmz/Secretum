@@ -1,4 +1,5 @@
 export const lightTheme = {
+    surface: '#FFFFFF',
     background: '#FFFFFF',
     text: '#000000',
     card: '#F0F0F0',
@@ -10,6 +11,7 @@ export const lightTheme = {
 };
 
 export const darkTheme = {
+    surface: '#1E1E1E',
     background: '#121212',
     text: '#FFFFFF',
     card: '#1E1E1E',

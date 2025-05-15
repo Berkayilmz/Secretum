@@ -9,7 +9,7 @@ import {
     sendPasswordResetEmail, 
     deleteUser,
     reauthenticateWithCredential,
-    EmailAuthProvider
+    EmailAuthProvider,
 } from "firebase/auth";
 
 const handleSignup = async (email, password, username) => {
@@ -83,7 +83,7 @@ const handleDeleteUser = async (password) => {
     const user = auth.currentUser;
     if (!user) throw new Error("Kullanıcı oturumu bulunamadı");
 
-    const email = user.email; // ✅ e-postayı buradan al
+    const email = user.email; 
     const credential = EmailAuthProvider.credential(email, password);
 
     try {
@@ -96,5 +96,17 @@ const handleDeleteUser = async (password) => {
     }
 };
 
-
-export { handleSignup, handleSignin, handleSignout, handleUpdateUser, handleVerification, handleUpdatePassword, handleDeleteUser }
+const handleVerifyPassword = async (password) => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Kullanıcı oturumu bulunamadı");
+  
+    const email = user.email;
+    const credential = EmailAuthProvider.credential(email, password);
+  
+    try {
+      await reauthenticateWithCredential(user, credential);
+    } catch (error) {
+      throw new Error("Kimlik doğrulama başarısız, lütfen şifrenizi doğru girdiğinizden emin olun.")
+    }
+  };
+export { handleSignup, handleSignin, handleSignout, handleUpdateUser, handleVerification, handleUpdatePassword, handleDeleteUser, handleVerifyPassword }

@@ -8,13 +8,14 @@ const CustomTextInput = ({
   height,
   placeholder,
   onChangeText,
-  secureTextEntry
+  secureTextEntry,
+  multiline = false
 }) => {
   const theme  = useTheme();
 
   return (
     <TextInput
-      multiline={true}
+      multiline={multiline}
       placeholder={placeholder}
       placeholderTextColor={theme.placeholder}
       onChangeText={onChangeText}

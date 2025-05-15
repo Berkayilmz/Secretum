@@ -6,7 +6,7 @@ import { lightTheme, darkTheme } from '../themes/themes';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const systemScheme = useColorScheme();
+  const systemScheme = 'light';
   const theme = systemScheme === 'dark' ? darkTheme : lightTheme;
 
   return (

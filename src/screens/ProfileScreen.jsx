@@ -11,8 +11,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 
+import CustomButton from '../components/ui/CustomButton'
+import ThemeToggleButton from '../components/ThemeToggleButton';
 import { useTheme } from '../contexts/ThemeContext';
-import CustomButton from '../components/ui/CustomButton';
 import { handleGetUserNoteStats } from '../firebase/db';
 import { handleSignout } from '../firebase/auth';
 import { auth } from '../firebase/firebaseConfig';
@@ -110,6 +111,7 @@ const ProfileScreen = ({ navigation }) => {
         height={45}
         onPress={handleSignout}
       />
+      
     </SafeAreaView>
   );
 };

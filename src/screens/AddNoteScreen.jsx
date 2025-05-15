@@ -63,6 +63,7 @@ const AddNoteScreen = ({ navigation }) => {
                 <CustomTextInput
                     width="100%"
                     placeholder="Günlüğünü buraya yaz..."
+                    multiline={true}
                     onChangeText={setNoteText}
                     height={120}
                 />
@@ -93,7 +94,7 @@ const AddNoteScreen = ({ navigation }) => {
                         value={isPrivate}
                         onValueChange={setIsPrivate}
                     />
-                    <Text style={{ marginLeft: 8 }}>Gizli Not</Text>
+                    <Text style={{ marginLeft: 8, color: theme.text }}>Gizli Günlük</Text>
                 </View>
             </ScrollView>
         </View>

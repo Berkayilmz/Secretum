@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { useTheme } from '../../contexts/ThemeContext';
 import { handleGetNotes } from '../../firebase/db';
+import { ThemeContext } from '@react-navigation/native';
 
 LocaleConfig.locales['tr'] = {
   monthNames: [
@@ -96,7 +97,14 @@ const CalendarComponent = ({ onDateSelect }) => {
               activeOpacity={0.7}
             >
               <View style={[styles.dayCircle, isSelected && { backgroundColor: theme.primary }]}>
-                <Text style={[styles.dayText, isSelected && styles.selectedDayText, isToday && !isSelected && { color: '#FF6347' }]}>
+                <Text
+                  style={[
+                    styles.dayText,
+                    { color: theme.text }, // <-- burada ekleniyor
+                    isSelected && styles.selectedDayText,
+                    isToday && !isSelected && { color: '#FF6347' }
+                  ]}
+                >
                   {date.day}
                 </Text>
               </View>
@@ -153,7 +161,6 @@ const styles = StyleSheet.create({
   dayText: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#333',
   },
   selectedDayText: {
     color: '#fff',

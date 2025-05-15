@@ -5,6 +5,8 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import CalendarComponent from '../components/ui/CalendarComponent';
 import DairyCard from '../components/ui/DairyCard';
+import PrivateDiaryPopup from '../components/popup/PrivateDiaryPopup';
+
 import { handleGetNotesByDate } from '../firebase/db';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -15,6 +17,8 @@ const CalendarScreen = () => {
   const today = new Date().toISOString().split('T')[0];
   const [selectedDate, setSelectedDate] = useState(today);
   const [notes, setNotes] = useState([]);
+  const [showPrivatePopup, setShowPrivatePopup] = useState(false);
+  const [pendingNote, setPendingNote] = useState(null);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -48,7 +52,14 @@ const CalendarScreen = () => {
                 const formattedDate = new Date(item.date).toLocaleDateString('tr-TR');
                 return (
                   <TouchableOpacity
-                    onPress={() => navigation.navigate('NoteDetailScreen', { note: item })}
+                    onPress={() => {
+                      if (item.isPrivate) {
+                        setPendingNote(item);
+                        setShowPrivatePopup(true);
+                      } else {
+                        navigation.navigate('NoteDetailScreen', { note: item });
+                      }
+                    }}
                     activeOpacity={0.8}
                     style={{ width: '48%', marginBottom: 12 }}
                   >
@@ -72,6 +83,17 @@ const CalendarScreen = () => {
           )}
         </View>
       </ScrollView>
+      <PrivateDiaryPopup
+        visible={showPrivatePopup}
+        onClose={() => setShowPrivatePopup(false)}
+        onSuccess={() => {
+          setShowPrivatePopup(false);
+          if (pendingNote) {
+            navigation.navigate('NoteDetailScreen', { note: pendingNote });
+            setPendingNote(null);
+          }
+        }}
+      />
     </SafeAreaView>
   );
 };

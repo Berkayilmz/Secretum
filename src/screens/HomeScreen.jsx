@@ -10,14 +10,17 @@ import CustomButton from '../components/ui/CustomButton.jsx';
 import DairyCard from '../components/ui/DairyCard.jsx';
 import CustomHeader from '../components/layout/CustomHeader.jsx';
 import DeleteNotePopup from '../components/popup/DeletNotePopup.jsx';
+import PrivateDiaryPopup from '../components/popup/PrivateDiaryPopup.jsx';
 
 const HomeScreen = ({ navigation }) => {
   const { setIsAuth } = useContext(AuthContext);
-  const  theme  = useTheme(); // tema verisini al
+  const theme = useTheme(); // tema verisini al
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [notes, setNotes] = useState(null);
   const [selectedNoteId, setSelectedNoteId] = useState(null);
   const [showDeletePopup, setShowDeletePopup] = useState(null);
+  const [showPrivatePopup, setShowPrivatePopup] = useState(false);
+  const [pendingNote, setPendingNote] = useState(null);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -60,7 +63,14 @@ const HomeScreen = ({ navigation }) => {
             const formattedDate = new Date(item.date).toLocaleDateString('tr-TR');
             return (
               <TouchableOpacity
-                onPress={() => navigation.navigate('NoteDetailScreen', { note: item })}
+                onPress={() => {
+                  if (item.isPrivate) {
+                    setPendingNote(item);
+                    setShowPrivatePopup(true);
+                  } else {
+                    navigation.navigate('NoteDetailScreen', { note: item });
+                  }
+                }}
                 activeOpacity={0.8}
                 style={{ width: '48%', marginBottom: 12 }}
               >
@@ -103,6 +113,18 @@ const HomeScreen = ({ navigation }) => {
         visible={showDeletePopup}
         onClose={() => setShowDeletePopup(false)}
         noteId={selectedNoteId}
+      />
+      <PrivateDiaryPopup
+        visible={showPrivatePopup}
+        onClose={() => setShowPrivatePopup(false)}
+        onSuccess={() => {
+          setShowPrivatePopup(false);
+          if (pendingNote) {
+            const tempNote = pendingNote;
+            setPendingNote(null); // 🛑 BUNU YAPMAZSAN sonsuz döngü olur
+            navigation.navigate('NoteDetailScreen', { note: tempNote });
+          }
+        }}
       />
     </SafeAreaView>
   );
