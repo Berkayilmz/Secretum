@@ -26,14 +26,13 @@
 - 🗑️ Günlük silme ve kullanıcı hesabı silme
 - 📊 Kullanıcıya özel istatistikler (toplam gün, en uzun seri)
 - 🎨 Koyu/açık tema desteği (dinamik)
+- 🔒 **Günlükler sadece hesaba erişimi olan kullanıcıların erişebileceği şekilde depolanır. Uygulama yapımcısı dahi kullanıcının günlüklerine erişemez.**
 
 ---
 
 ## 🧩 Eklenecek Özellikler
 
 - 🔄 **Google Authentication** desteği
-- 🔒 **Günlükler sadece hesaba erişimi olan kullanıcıların erişebileceği şekilde depolanacak. Uygulama yapımcısı dahi kullanıcının günlüklerine erişemeyecek.**
-- 🔒 **Gizlilik Modu:** Ana ekranda seçilen günlüklerin bulanık gösterilme seçeneği eklenecek, kullanıcı tıklayarak açabilecek
 - 🎨 **UI İyileştirmeleri:** Arayüz görsel olarak iyileştirilecek, geçişler daha akıcı hale getirilecek
 - 💬 **Duygu Analizi:** Günlüklerin **sadece emojileri** analiz edilerek kullanıcının ruh hali belirlenecek
 - ✉️ **Motivasyon Mektupları:** Olumsuz duygu tespitinde uygulama kullanıcıya pozitif ve kişisel mesajlar sunacak
@@ -82,19 +81,36 @@ Kullanıcı bilgileri, giriş tarihi ve günlük istatistikleri görüntülenebi
 
 ---
 
+### 👁️ Gizli Günlük Modu  
+Kullanıcının işaretlediği notlar ana ekranda **Kilitli** halde gösterilir. Günlüğe erişmek için şifre doğrulaması yapılır.
+
+<img src="assets/readme-images/private-diary.jpeg" width="250"/>
+
+---
+
+### 🔐 Şifrelenmiş Not Saklama  
+Kullanıcının notları, yalnızca onun erişebileceği şekilde AES algoritması ile şifrelenerek cihazda saklanır. Başlık, içerik ve görsel verileri şifrelenmiştir.
+Bu şifreleme şu anlık cihaza özeldir. Kullanıcı farklı bir cihazdan giriş yaptığı taktirde cihaza özel üretilen AES key sebebi ile notlarına erişemez.
+
+<img src="assets/readme-images/encrypted.jpeg" width="250"/>
+
+---
+
+
 ## 🧱 Kullanılan Teknolojiler
 
-| Alan            | Teknoloji                    |
-|-----------------|------------------------------|
-| Mobil           | React Native (Expo)          |
-| Navigasyon      | React Navigation             |
-| UI Bileşenleri  | Custom component sistemi     |
-| Firebase Auth   | Kullanıcı doğrulama          |
-| Firestore       | Notların bulutta saklanması  |
-| Takvim          | `react-native-calendars`     |
-| Emoji           | `rn-emoji-keyboard`          |
-| Fotoğraf Seçici | `expo-image-picker`          |
-| Temalandırma    | `ThemeContext` + dark/light  |
+| Alan             | Teknoloji                              |
+|------------------|------------------------------------------|
+| Mobil            | React Native (Expo)                     |
+| Navigasyon       | React Navigation                        |
+| UI Bileşenleri   | Custom component sistemi                |
+| Firebase Auth    | Kullanıcı doğrulama                     |
+| Firestore        | Notların bulutta saklanması             |
+| Takvim           | `react-native-calendars`                |
+| Emoji            | `rn-emoji-keyboard`                     |
+| Fotoğraf Seçici  | `expo-image-picker`                     |
+| Temalandırma     | `ThemeContext` + dark/light             |
+| Şifreleme        | `crypto-js`, `expo-secure-store` (AES)  |
 
 ---
 
